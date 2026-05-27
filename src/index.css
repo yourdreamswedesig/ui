@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import "tailwindcss";
+
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f7f7f7;
+}
+
+.border-grey {
+  border: 1px solid oklch(92.8% 0.006 264.531);
+}
+
+.poppins-thin {
+  font-family: "Instrument Serif", serif;
+}
+
+@theme {
+  /* Colors */
+  --color-primary: #000000;
+  --color-secondary: #FFF;
+  --color-background: #0F172A;
+  --color-surface: #1E293B;
+  --color-text: #F8FAFC;
+
+  /* Font sizes */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 34px;
+  --text-h: 43px;
+  --text-hero: 56px;
+  --text-3xl: 64px;
+
+  /* Border radius */
+  --radius-card: 20px;
+
+  /* Fonts */
+  --font-primary: "Inter", sans-serif;
+}
