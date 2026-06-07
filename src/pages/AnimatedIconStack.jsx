@@ -20,19 +20,19 @@ function LightningIcon({ className }) {
 // ==========================================
 export default function AnimatedIconStack() {
     return (
-        <div className="w-full flex items-center justify-center ">
+        <div className="w-full flex items-center justify-center z-0">
 
             {/* Container wrapper housing the 4 layers */}
-            <div className="relative flex items-center justify-center w-52 h-44">
+            <div className="relative flex items-center justify-center w-[110px] lg:w-[208px] h-[176px]">
 
                 {/* 1. FRONT TOP CARD (Static anchoring center point) */}
-                <div className="absolute w-28 h-28 rounded-[32px] bg-[#5c7cfa] flex items-center justify-center shadow-lg shadow-blue-500/10 z-[4]">
+                <div className="absolute w-16 h-16 lg:w-28 lg:h-28 rounded-[10px] lg:rounded-[32px] bg-[#5c7cfa] flex items-center justify-center shadow-lg shadow-blue-500/10 z-[4]">
                     <LightningIcon className="w-12 h-12 text-white drop-shadow-sm animate-pulse" />
                 </div>
 
                 {/* 2. SECOND DECK CARD (Directly behind top card) */}
                 <div
-                    className="absolute w-28 h-28 rounded-[32px] bg-[#748ffc] opacity-75 z-[3] animate-[stack-fan_3.8s_ease-in-out_infinite]"
+                    className="absolute w-16 h-16 lg:w-28 lg:h-28 rounded-[10px] lg:rounded-[32px] bg-[#748ffc] opacity-75 z-[3] animate-[stack-fan_3.8s_ease-in-out_infinite]"
                     style={{
                         '--tw-enter-x': '-16px',
                         '--tw-exit-x': '-28px',
@@ -44,7 +44,7 @@ export default function AnimatedIconStack() {
 
                 {/* 3. THIRD DECK CARD (Mid-background layer) */}
                 <div
-                    className="absolute w-28 h-28 rounded-[32px] bg-[#91a7ff] opacity-45 z-[2] animate-[stack-fan_3.8s_ease-in-out_infinite]"
+                    className="absolute w-16 h-16 lg:w-28 lg:h-28 rounded-[10px] lg:rounded-[32px] bg-[#91a7ff] opacity-45 z-[2] animate-[stack-fan_3.8s_ease-in-out_infinite]"
                     style={{
                         '--tw-enter-x': '-32px',
                         '--tw-exit-x': '-54px',
@@ -56,7 +56,7 @@ export default function AnimatedIconStack() {
 
                 {/* 4. FOURTH BASE CARD (Deepest background layer - Newly Added) */}
                 <div
-                    className="absolute w-28 h-28 rounded-[32px] bg-[#adc1ff] opacity-25 z-[1] animate-[stack-fan_3.8s_ease-in-out_infinite]"
+                    className="absolute w-16 h-16 lg:w-28 lg:h-28 rounded-[10px] lg:rounded-[32px] bg-[#adc1ff] opacity-25 z-[1] animate-[stack-fan_3.8s_ease-in-out_infinite]"
                     style={{
                         '--tw-enter-x': '-48px',
                         '--tw-exit-x': '-78px',

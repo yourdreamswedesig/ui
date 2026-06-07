@@ -3,6 +3,9 @@ import CheckIcon from '../assets/check.svg?react';
 import TestimonialCard from './Testimonial.jsx';
 import FAQ from './FAQ.jsx';
 import IntroHeroSection from './IntroHeroSection.jsx';
+
+import ContactUs from './ContactUs.jsx';
+
 import AnimatedIconStack from './AnimatedIconStack'
 import {
     Zap,
@@ -13,8 +16,12 @@ import {
     PanelsTopLeft,
     Circle,
     Play,
-    Minus
+    Minus,
+    Plus
 } from "lucide-react";
+import { scrollToSection } from '../HelperFunction/scrollToSection';
+import Button from '../components/Button';
+import { useEffect, useRef, useState } from "react";
 
 
 const projects = [
@@ -86,7 +93,7 @@ function VideoSection() {
 
 function IntroContent() {
     return (
-        <div className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-[180px_1fr]">
+        <div className="mt-16 grid grid-cols-1 gap-10 grid-cols-[180px_1fr]">
             {/* Left Label */}
             <div className="pt-2">
                 <div class="flex items-center justify-center gap-2"><span class="h-2 w-2 rounded-full bg-blue-500"></span><span class="text-base text-gray-500">Introduction</span></div>
@@ -94,7 +101,7 @@ function IntroContent() {
 
             {/* Right Text */}
             <div>
-                <h2 className="max-w-4xl text-2xl">
+                <h2 className="max-w-4xl text-2xl pl-[4rem] lg:pl-[10rem] text-[#595959]">
                     DesignDreams is an agency for design, code and no-code
                     development, providing unlimited services for a simplified cost.
                     Simplify your workflow and scale with ease.
@@ -104,17 +111,84 @@ function IntroContent() {
     );
 }
 
-function StatCard({ number, label }) {
+
+function StatCard({ number, label, duration = 1500 }) {
+    const [count, setCount] = useState(0);
+    const [hasAnimated, setHasAnimated] = useState(false);
+
+    const cardRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !hasAnimated) {
+                    setHasAnimated(true);
+                }
+            },
+            {
+                threshold: 0.4,
+            }
+        );
+
+        if (cardRef.current) {
+            observer.observe(cardRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [hasAnimated]);
+
+    useEffect(() => {
+        if (!hasAnimated) return;
+
+        const numericValue = parseInt(number);
+
+        let start = 0;
+        const increment = numericValue / (duration / 16);
+
+        const timer = setInterval(() => {
+            start += increment;
+
+            if (start >= numericValue) {
+                start = numericValue;
+                clearInterval(timer);
+            }
+
+            setCount(Math.floor(start));
+        }, 16);
+
+        return () => clearInterval(timer);
+    }, [hasAnimated, number, duration]);
+
+    // Extract suffix like k, M, +
+    const suffix = number.replace(/[0-9]/g, "");
+
     return (
-        <div className="text-center">
+        <div ref={cardRef} className="text-center">
             <h3 className="text-5xl font-semibold text-black">
-                {number}
+                {count}
+                {suffix}
             </h3>
 
-            <p className="mt-3 text-sm text-gray-500">{label}</p>
+            <p className="mt-3 text-sm text-gray-500">
+                {label}
+            </p>
         </div>
     );
 }
+
+
+
+// function StatCard({ number, label }) {
+//     return (
+//         <div className="text-center">
+//             <h3 className="text-5xl font-semibold text-black">
+//                 {number}
+//             </h3>
+
+//             <p className="mt-3 text-sm text-gray-500">{label}</p>
+//         </div>
+//     );
+// }
 
 function StatsSection() {
     return (
@@ -222,7 +296,7 @@ function BenefitsGrid() {
 function SectionHeading() {
     return (
         <div className="mx-auto mt-5  text-center">
-            <h2 className="text-m md:text-hero font-semibold leading-[1.2] tracking-[-0.03em]">
+            <h2 className="text-h lg:text-hero font-semibold leading-[1.2] tracking-[-0.03em]">
                 High quality projects crafted
                 <br />
                 by experts
@@ -238,42 +312,94 @@ function ProjectCard({
     image,
 }) {
     return (
-        <div className="overflow-hidden rounded-[30px] cursor-pointer w-[42%] relative">
-            <div className='h-[425px]  overflow-hidden'>
-                {/* Image */}
-                <img
-                    src={image}
-                    alt={title}
-                    className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
-                />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
+        <div className="w-[48%] lg:w-[42%] h-[300px] lg:h-[425px] perspective-[1200px] cursor-pointer group">
+            <div
+                className="
+                    relative w-full h-full
+                    transition-transform duration-700
+                    [transform-style:preserve-3d]
+                    group-hover:[transform:rotateY(180deg)]
+                "
+            >
+                {/* FRONT SIDE */}
+                <div
+                    className="
+                        absolute inset-0
+                        rounded-[30px]
+                        overflow-hidden
+                        [backface-visibility:hidden]
+                    "
+                >
+                    <img
+                        src={image}
+                        alt={title}
+                        className="w-full h-full object-cover"
+                    />
 
-                {/* Content */}
-                <div className="absolute bottom-8 left-6 right-6 flex items-end justify-between text-white">
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
 
-                    <h3 className="text-2xl font-medium">
+                    {/* Content */}
+                    <div className="absolute bottom-8 left-6 right-6 text-white">
+                        <h3 className="text-2xl font-medium">
+                            {title}
+                        </h3>
+
+                        <div className="flex items-center gap-2 text-base text-white/90 mt-2">
+                            <span>{category}</span>
+                            <span>•</span>
+                            <span>{year}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* BACK SIDE */}
+                <div
+                    className="
+                        absolute inset-0
+                        rounded-[30px]
+                        bg-black text-white
+                        p-8 flex flex-col justify-center
+                        [transform:rotateY(180deg)]
+                        [backface-visibility:hidden]
+                    "
+                >
+                    <p className="text-sm uppercase tracking-[3px] text-white/50 mb-4">
+                        Project Details
+                    </p>
+
+                    <h3 className="text-3xl font-semibold">
                         {title}
                     </h3>
 
-                    <div className="flex items-center gap-2 text-base text-white/90">
-                        <span>{category}</span>
+                    <p className="mt-5 text-white/70 leading-relaxed">
+                        This is some random project description text.
+                        You can write about the project, tech stack,
+                        achievements, animations, UI/UX, or anything here.
+                    </p>
 
-                        <span>•</span>
+                    <div className="mt-6 flex flex-wrap gap-2">
+                        <span className="px-4 py-2 rounded-full bg-white/10 text-sm">
+                            React
+                        </span>
 
-                        <span>{year}</span>
+                        <span className="px-4 py-2 rounded-full bg-white/10 text-sm">
+                            Tailwind
+                        </span>
+
+                        <span className="px-4 py-2 rounded-full bg-white/10 text-sm">
+                            GSAP
+                        </span>
                     </div>
                 </div>
             </div>
-
-
         </div>
     );
 }
 
 function ProjectsGrid() {
     return (
-        <div className="mt-20 flex flex-wrap gap-6 justify-around mb-[6rem]">
+        <div className="mt-[4rem] lg:mt-[10rem] flex  flex-row  flex-wrap gap-6 justify-around mb-[3rem] lg:mb-[6rem]">
             {projects.map((project, index) => (
                 <ProjectCard
                     key={index}
@@ -372,7 +498,6 @@ function Tag({ children }) {
         </span>
     );
 }
-
 function ServiceRow({
     number,
     title,
@@ -381,51 +506,161 @@ function ServiceRow({
     tags,
     ind
 }) {
+    const [isOpen, setIsOpen] = useState(ind === 0);
+
     return (
-        <div className={`grid ${ind != 0 ? "border-t border-white/10" : ""}  py-12 lg:grid-cols-[60px_100px_1fr_1fr_60px] gap-8 items-start`}>
+        <div
+            className={`
+                w-[90%] mx-auto py-8 lg:py-12
+                ${ind !== 0 ? "border-t border-white/10" : ""}
+            `}
+        >
+            {/* MOBILE LAYOUT */}
+            <div className="flex flex-col gap-5 lg:hidden">
 
-            {/* Number */}
-            <div className="text-sm text-white/70">
-                ({number})
-            </div>
+                {/* Top Row */}
+                <div className="flex items-start justify-between gap-4">
 
-            {/* Image */}
-            <img
-                src={image}
-                alt={title}
-                className="h-[72px] w-[100px] rounded-xl object-cover"
-            />
+                    <div className="flex gap-4">
+                        {/* Image */}
+                        <img
+                            src={image}
+                            alt={title}
+                            className={`
+                                rounded-xl object-cover transition-all duration-300
+                                ${isOpen
+                                    ? "w-[110px] h-[110px]"
+                                    : "w-[72px] h-[72px]"
+                                }
+                            `}
+                        />
 
-            {/* Content */}
-            <div>
-                <h3 className="text-2xl font-medium text-white">
-                    {title}
-                </h3>
+                        {/* Title + Number */}
+                        <div>
+                            <p className="text-xs text-white/40 mb-2">
+                                ({number})
+                            </p>
 
-                <p className="mt-4 max-w-[320px] text-base leading-7 text-white/50">
-                    {description}
-                </p>
-            </div>
+                            <h3 className="text-xl font-medium text-white leading-snug">
+                                {title}
+                            </h3>
+                        </div>
+                    </div>
 
-            {/* Tags */}
-            <div>
-                <p className="mb-5 text-sm text-white/30">
-                    Categories
-                </p>
+                    {/* Expand button */}
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="flex h-10 w-10 min-w-10 items-center justify-center rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition"
+                    >
+                        {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+                    </button>
+                </div>
 
-                <div className="flex flex-wrap gap-2">
-                    {tags.map((tag, i) => (
-                        <Tag key={i}>{tag}</Tag>
-                    ))}
+                {/* Expandable Content */}
+                <div
+                    className={`
+                        overflow-hidden transition-all duration-500
+                        ${isOpen
+                            ? "max-h-[500px] opacity-100"
+                            : "max-h-0 opacity-0"
+                        }
+                    `}
+                >
+                    <p className="text-sm leading-7 text-white/60">
+                        {description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="mt-6">
+                        <p className="mb-3 text-xs uppercase tracking-wider text-white/30">
+                            Categories
+                        </p>
+
+                        <div className="flex flex-wrap gap-2">
+                            {tags.map((tag, i) => (
+                                <Tag key={i}>{tag}</Tag>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Expand button */}
-            {/* <button className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition">
+            {/* DESKTOP LAYOUT */}
+            <div
+                className={`
+                    hidden lg:grid
+                    lg:grid-cols-[60px_100px_1fr_1fr_60px]
+                    gap-8 items-start
+                `}
+            >
+                {/* Number */}
+                <div className="text-sm text-white/70">
+                    ({number})
+                </div>
 
-                <Minus size={16} />
+                {/* Image */}
+                <img
+                    src={image}
+                    alt={title}
+                    className={`
+                        rounded-xl object-cover transition-all duration-300
+                        ${isOpen
+                            ? "h-[140px] w-full lg:w-[160px]"
+                            : "h-[72px] w-[100px]"
+                        }
+                    `}
+                />
 
-            </button> */}
+                {/* Content */}
+                <div>
+                    <h3 className="text-2xl font-medium text-white">
+                        {title}
+                    </h3>
+
+                    <div
+                        className={`
+                            overflow-hidden transition-all duration-500
+                            ${isOpen
+                                ? "max-h-[300px] opacity-100 mt-4"
+                                : "max-h-0 opacity-0"
+                            }
+                        `}
+                    >
+                        <p className="max-w-[320px] text-base leading-7 text-white/50">
+                            {description}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Tags */}
+                <div
+                    className={`
+                        overflow-hidden transition-all duration-500
+                        ${isOpen
+                            ? "max-h-[300px] opacity-100"
+                            : "max-h-0 opacity-0"
+                        }
+                    `}
+                >
+                    <p className="mb-5 text-sm text-white/30">
+                        Categories
+                    </p>
+
+                    <div className="flex flex-wrap gap-2">
+                        {tags.map((tag, i) => (
+                            <Tag key={i}>{tag}</Tag>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Expand button */}
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition"
+                >
+                    {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+                </button>
+            </div>
         </div>
     );
 }
@@ -433,10 +668,10 @@ function ServiceRow({
 const LandingPage = () => {
     return (
         <div>
-            <section className="w-full min-h-screen bg-[#f5f5f5] flex flex-col justify-between overflow-hidden container mx-auto">
+            <section className="w-[90%] min-h-screen bg-[#f5f5f5] flex flex-col justify-between overflow-hidden container mx-auto">
 
                 {/* Main Hero */}
-                <div className="flex flex-col items-center justify-center pt-[10rem] border-grey">
+                <div className="flex flex-col items-center justify-center pt-[5rem] border-grey">
 
                     {/* Top Badge */}
                     <div className="flex items-center gap-4 bg-white border border-gray-200 rounded-full px-5 py-3 shadow-sm">
@@ -472,7 +707,7 @@ const LandingPage = () => {
 
                         {/* First Line */}
                         <div className="flex items-center justify-center ">
-                            <h1 className="text-3xl font-medium tracking-[-2px] text-black">
+                            <h1 className="text-hero lg:text-3xl font-medium tracking-[-2px] text-black">
                                 Scale your
                             </h1>
 
@@ -481,17 +716,17 @@ const LandingPage = () => {
                                 <AnimatedIconStack />
                             </div>
 
-                            <h1 className="text-hero font-medium tracking-[-2px] text-black">
+                            <h1 className="text-hero lg:text-3xl font-medium tracking-[-2px] text-black">
                                 brand
                             </h1>
                         </div>
 
                         {/* Second Line */}
                         <div className="mt-3">
-                            <h1 className="text-3xl font-medium tracking-[-2px] text-black">
+                            <h1 className="text-hero lg:text-3xl font-medium tracking-[-2px] text-black">
                                 with{" "}
                                 <span
-                                    className="font-normal italic poppins-thin tracking-[-2px] text-3xl"
+                                    className="font-normal italic poppins-thin tracking-[-2px] text-hero lg:text-3xl"
                                 >
                                     DesignDreams
                                 </span>
@@ -500,24 +735,21 @@ const LandingPage = () => {
                     </div>
 
                     {/* Buttons */}
-                    <div className="mt-16 flex items-center gap-6 mb-[10rem]">
+                    <div className="mt-16 flex items-center gap-6 mb-[4rem] lg:mb-[10rem]">
 
-                        <button className="bg-black text-white text-base px-14 py-5 rounded-full shadow-2xl hover:scale-105 transition">
-                            Get Started
-                        </button>
+                        <Button label='Get Started' click={() => {
+                            scrollToSection('book-a-call')
+                        }} />
 
-                        <button className="bg-[#f5f5f5] border border-gray-300 text-gray-700 text-base px-14 py-5 rounded-full hover:bg-white transition">
-                            2024 Work
-                        </button>
                     </div>
                 </div>
 
                 {/* Bottom Features */}
-                <div className='container mx-auto border border-gray-200  mb-[3.2rem]'>
+                <div className='w-full container mx-auto border border-gray-200  mb-[3.2rem]'>
                     <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto">
 
                         {/* Item 1 */}
-                        <div className="flex items-center justify-center gap-5 py-10 border-r border-gray-200">
+                        <div className="flex items-center justify-center gap-5 py-4 border-r border-gray-200">
                             <div className="p-[6px] rounded-full border border-gray-300 flex items-center justify-center">
                                 <CheckIcon />   {/* <Check size={22} /> */}
                             </div>
@@ -528,7 +760,7 @@ const LandingPage = () => {
                         </div>
 
                         {/* Item 2 */}
-                        <div className="flex items-center justify-center gap-5 py-10 border-r border-gray-200">
+                        <div className="flex items-center justify-center gap-5 py-4 border-r border-gray-200">
                             <div className="p-[6px] rounded-full border border-gray-300 flex items-center justify-center">
 
                                 <CheckIcon />   {/* <Check size={22} /> */}
@@ -540,7 +772,7 @@ const LandingPage = () => {
                         </div>
 
                         {/* Item 3 */}
-                        <div className="flex items-center justify-center gap-5 py-10">
+                        <div className="flex items-center justify-center gap-5 py-4">
                             <div className="p-[6px] rounded-full border border-gray-300 flex items-center justify-center">
                                 <CheckIcon />  {/* <Check size={22} /> */}
                             </div>
@@ -559,13 +791,13 @@ const LandingPage = () => {
                 </div>
 
                 {/* Benefits section */}
-                <div className="mx-auto container pb-[6rem] bg-white pt-[7rem]">
+                <div className="mx-auto w-full lg:container pb-[6rem] bg-white pt-[7rem]">
 
                     <SectionLabel />
 
                     {/* Heading */}
                     <div className="mx-auto mt-5 max-w-[900px] text-center">
-                        <h2 className="text-h md:text-hero font-semibold leading-[1.2] tracking-[-0.03em]">
+                        <h2 className="text-h lg:text-hero font-semibold leading-[1.2] tracking-[-0.03em]">
                             Everything your brand needs
                             <br />
                             — in one creative partner
@@ -577,7 +809,7 @@ const LandingPage = () => {
                 </div>
 
                 {/* Projects section */}
-                <div className="mx-auto container mt-[6rem]">
+                <div className="mx-auto w-full container mt-[6rem]" id='projects'>
                     <SectionLabel label={'Projects'} />
                     <SectionHeading />
                     <ProjectsGrid />
@@ -586,10 +818,14 @@ const LandingPage = () => {
 
             </section>
             {/* Services section */}
-            <div className="mx-auto bg-black rounded-xl m-[2rem]">
+            <div id='services' className="mx-auto      bg-gradient-to-b from-[#111] to-black
+    rounded-3xl
+    border border-white/10
+    shadow-[0_0_50px_rgba(255,255,255,0.05)]
+    m-[2rem]">
                 <div className='max-w-7xl m-auto'>
 
-                    <h3 className='text-3xl text-white text-center pt-[6rem]'>Services</h3>
+                    <h3 className='text-h lg:text-3xl text-white text-center pt-[6rem]'>Services</h3>
 
                     {services.map((service, ind) => (
                         <ServiceRow
@@ -606,6 +842,7 @@ const LandingPage = () => {
             <div className=''>
                 <TestimonialCard />
                 <FAQ />
+                <ContactUs />
                 <IntroHeroSection />
             </div>
         </div>

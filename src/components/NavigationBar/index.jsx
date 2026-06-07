@@ -1,13 +1,50 @@
-import React, { useState } from "react";
-// import { Menu, X } from "lucide-react";
-import Button from '../Button';
-import Icon from '../../assets/icon.svg?react'
-export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
+import React, { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
+import Button from "../Button";
+import Icon from "../../assets/icon.svg?react";
+import { scrollToSection } from "../../HelperFunction/scrollToSection";
+
+export function NavItem(props) {
+    const { label, id, onClick } = props;
 
     return (
-        <nav className="w-full container mx-auto sticky top-0 bg-[#f7f7f7] z-1">
-            <div className="mx-auto px-6 md:px-10 py-5 flex items-center justify-between border border-gray-200 ">
+        <span
+            className="text-black text-sm font-medium hover:text-gray-600 transition cursor-pointer"
+            onClick={() => {
+                scrollToSection(id);
+                onClick?.();
+            }}
+        >
+            {label}
+        </span>
+    );
+}
+
+export default function Navbar() {
+    const [isOpen, setIsOpen] = useState(false);
+    const navRef = useRef(null);
+
+    // Close menu on outside click
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (navRef.current && !navRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <nav
+            ref={navRef}
+            className="w-[90%] container mx-auto relative"
+        >
+            <div className="mx-auto py-5 flex items-center justify-between border border-gray-200">
 
                 {/* Logo */}
                 <div className="flex items-center">
@@ -18,70 +55,51 @@ export default function Navbar() {
                 </div>
 
                 {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-14">
-                    <a
-                        href="#"
-                        className="text-black text-sm font-medium hover:text-gray-600 transition"
-                    >
-                        Projects
-                    </a>
-
-                    <a
-                        href="#"
-                        className="text-black text-sm font-medium hover:text-gray-600 transition"
-                    >
-                        Services
-                    </a>
-
-                    <a
-                        href="#"
-                        className="text-black text-sm font-medium hover:text-gray-600 transition"
-                    >
-                        Testimonial
-                    </a>
+                <div className="hidden lg:flex items-center gap-14">
+                    <NavItem label="Projects" id="projects" />
+                    <NavItem label="Services" id="services" />
+                    <NavItem label="Testimonial" id="testimonial" />
                 </div>
 
                 {/* Desktop Button */}
-                <Button label='Get Started' />
+                <div className="hidden lg:block">
+                    <Button
+                        label="Get Started"
+                        click={() => {
+                            scrollToSection("book-a-call");
+                        }}
+                    />
+                </div>
 
                 {/* Mobile Menu Button */}
                 <button
-                    className="md:hidden text-black"
+                    className="lg:hidden text-black mr-[1rem]"
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    {isOpen ? 'X' : 'M'}
+                    {isOpen ? <X /> : <Menu />}
                 </button>
             </div>
-
-            {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden px-6 pb-6 flex flex-col gap-5 bg-[#f4f4f4]">
-                    <a
-                        href="#"
-                        className="text-lg font-medium hover:text-gray-600"
-                    >
-                        Projects
-                    </a>
+                <div className="lg:hidden px-6 py-6 flex flex-col gap-5 bg-[#f4f4f4] text-center absolute w-full transition-all"
+                    onClick={() => setIsOpen(false)}
+                >
+                    <NavItem
+                        label="Projects"
+                        id="projects"
 
-                    <a
-                        href="#"
-                        className="text-lg font-medium hover:text-gray-600"
-                    >
-                        Services
-                    </a>
-
-                    <a
-                        href="#"
-                        className="text-lg font-medium hover:text-gray-600"
-                    >
-                        Testimonial
-                    </a>
-
-                    <button className="bg-black text-white py-3 rounded-full shadow-lg mt-2 text-sm">
-                        Get Started
-                    </button>
+                    />
+                    <NavItem
+                        label="Services"
+                        id="services"
+                    />
+                    <NavItem
+                        label="Testimonial"
+                        id="testimonial"
+                    />
                 </div>
             )}
+            {/* Mobile Menu */}
+
         </nav>
     );
 }

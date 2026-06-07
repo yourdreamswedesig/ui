@@ -8,5 +8,5 @@ export default defineConfig({
   tailwindcss(),
     , svgr()
   ],
-  base: '/DesignDreams'
+  base: '/ui'
 })

@@ -45,7 +45,7 @@ function AvatarStack({ testimonials, currentIndex, onSelect }) {
                         <img
                             src={item.image}
                             alt={item.name}
-                            className={`w-14 h-14 rounded-full border-2 border-white object-cover shadow-sm transition-all duration-300 ${isActive
+                            className={`cursor-pointer w-14 h-14 rounded-full border-2 border-white object-cover shadow-sm transition-all duration-300 ${isActive
                                 ? 'scale-110 z-10 opacity-100 grayscale-0'
                                 : 'scale-95 opacity-40 grayscale hover:opacity-70'
                                 }`}
@@ -89,7 +89,7 @@ function SliderDots({ total, current, onSelect }) {
                 <button
                     key={index}
                     onClick={() => onSelect(index)}
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none ${index === current ? 'bg-[#5c7cfa] scale-110' : 'bg-[#e9ecef] hover:bg-gray-300'
+                    className={`cursor-pointer w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none ${index === current ? 'bg-[#5c7cfa] scale-110' : 'bg-[#e9ecef] hover:bg-gray-300'
                         }`}
                     aria-label={`Go to slide ${index + 1}`}
                 />
@@ -107,7 +107,7 @@ export default function TestimonialCard() {
     const currentTestimonial = TESTIMONIALS_DATA[activeIndex];
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[500px] bg-[#f8f9fa] px-6 py-12 text-center font-sans selective-transition">
+        <div id="testimonial" className="flex flex-col items-center justify-center min-h-[500px] bg-[#f8f9fa] px-6 py-12 text-center font-sans selective-transition">
 
             {/* Interactive Avatar Row */}
             <AvatarStack

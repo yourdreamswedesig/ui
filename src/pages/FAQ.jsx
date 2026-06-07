@@ -36,7 +36,7 @@ const FAQ_DATA = [
 // ==========================================
 function FAQItem({ question, answer, isOpen, onToggle }) {
     return (
-        <div className="w-full bg-[#f8f9fa] rounded-2xl border border-gray-100/50 overflow-hidden shadow-sm transition-all duration-300">
+        <div className={`w-full ${isOpen ? 'bg-white' : 'bg-[#f8f9fa]'} rounded-2xl border border-gray-100/50 overflow-hidden shadow-sm transition-all duration-300`}>
             {/* Trigger Header Button */}
             <button
                 onClick={onToggle}
@@ -83,7 +83,7 @@ export default function FAQAccordion() {
     };
 
     return (
-        <div className="w-full min-h-screen bg-[#fcfcfc] flex flex-col items-center px-4 py-16 md:py-24 font-sans selection:bg-blue-100">
+        <div className="w-full lg:min-h-screen bg-[#fcfcfc] flex flex-col items-center px-4 py-16 md:py-24 font-sans selection:bg-blue-100">
             <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
 
                 {/* Top Mini Pill Indicator */}
@@ -95,8 +95,8 @@ export default function FAQAccordion() {
                 </div>
 
                 {/* Dynamic Title */}
-                <h2 className="text-3xl md:text-5xl font-bold text-[#111111] tracking-tight text-center max-w-2xl leading-[1.15] mb-14">
-                    How our unlimited design subscription works
+                <h2 className="text-h lg:text-3xl font-bold text-[#111111] tracking-tight text-center max-w-2xl leading-[1.15] mb-14">
+                    How our unlimited design subscription works?
                 </h2>
 
                 {/* Accordion Stack Wrapper */}

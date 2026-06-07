@@ -1,7 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 import Navbar from './components/NavigationBar';
 import LandingPage from './pages/LandingPage'
@@ -10,7 +6,9 @@ function App() {
 
   return (
     <div className='w-full'>
-      <Navbar />
+      <div className='w-full bg-[#f7f7f7] sticky top-0 z-100'>
+        <Navbar />
+      </div>
       <div className='wrapper' >
 
         <LandingPage />
